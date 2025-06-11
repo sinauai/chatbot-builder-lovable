@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,7 +7,7 @@ interface AuthContextType {
   session: Session | null;
   userRole: 'admin' | 'user' | null;
   loading: boolean;
-  signInWithGitHub: () => Promise<void>;
+  signInWithGitHub: () => void;
   signOut: () => Promise<void>;
 }
 
@@ -62,18 +61,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signInWithGitHub = async () => {
-    const redirectUrl = `${window.location.origin}/`;
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: redirectUrl,
-        scopes: 'repo'
-      }
-    });
-    if (error) {
-      console.error('Error signing in with GitHub:', error);
+  const signInWithGitHub = () => {
+    const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
+    const redirectUri = `${window.location.origin}/github-callback`;
+    const scope = "read:user repo";
+
+    if (!clientId) {
+      console.error("VITE_GITHUB_CLIENT_ID is not defined.");
+      // Anda bisa menambahkan toast atau penanganan error di UI jika diperlukan
+      return;
     }
+
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
   };
 
   const signOut = async () => {
