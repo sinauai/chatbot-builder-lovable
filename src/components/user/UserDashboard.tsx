@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -88,10 +87,41 @@ export function UserDashboard() {
     if (!selectedTemplate || !chatbotName.trim()) return;
 
     try {
-      // Create new repository entry
+      // Get GitHub access token from session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
+
+      const githubToken = session?.provider_token;
+      if (!githubToken) {
+        throw new Error('GitHub access token not found');
+      }
+
+      // Create new repository name
       const newRepoName = chatbotName.toLowerCase().replace(/\s+/g, '-');
       const newRepoUrl = `https://github.com/${user?.user_metadata.user_name}/${newRepoName}`;
 
+      // Create repository in GitHub
+      const response = await fetch('https://api.github.com/user/repos', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${githubToken}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newRepoName,
+          description: `Chatbot ${chatbotName}`,
+          private: false,
+          auto_init: true
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create GitHub repository');
+      }
+
+      // Create new repository entry in database
       const { data: newRepo, error } = await supabase
         .from('user_repositories')
         .insert({
@@ -115,7 +145,7 @@ export function UserDashboard() {
 
       toast({
         title: "Berhasil",
-        description: `Repository ${chatbotName} berhasil disalin`,
+        description: `Repository ${chatbotName} berhasil dibuat di GitHub`,
       });
 
       setChatbotName('');
@@ -126,7 +156,7 @@ export function UserDashboard() {
       console.error('Error copying repository:', error);
       toast({
         title: "Error",
-        description: "Gagal menyalin repository",
+        description: error instanceof Error ? error.message : "Gagal menyalin repository",
         variant: "destructive",
       });
     }
