@@ -9,16 +9,274 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      chatbot_config: {
+        Row: {
+          created_at: string | null
+          id: string
+          subtitle: string | null
+          title: string | null
+          updated_at: string | null
+          user_repo_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_repo_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_repo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chatbot_config_user_repo_id_fkey"
+            columns: ["user_repo_id"]
+            isOneToOne: true
+            referencedRelation: "user_repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news: {
+        Row: {
+          created_at: string | null
+          full_text: string
+          id: string
+          published_at: string
+          title: string
+          updated_at: string | null
+          url: string
+          user_repo_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          full_text: string
+          id?: string
+          published_at: string
+          title: string
+          updated_at?: string | null
+          url: string
+          user_repo_id: string
+        }
+        Update: {
+          created_at?: string | null
+          full_text?: string
+          id?: string
+          published_at?: string
+          title?: string
+          updated_at?: string | null
+          url?: string
+          user_repo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_user_repo_id_fkey"
+            columns: ["user_repo_id"]
+            isOneToOne: false
+            referencedRelation: "user_repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          github_access_token: string | null
+          github_avatar_url: string | null
+          github_username: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          github_access_token?: string | null
+          github_avatar_url?: string | null
+          github_username?: string | null
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          github_access_token?: string | null
+          github_avatar_url?: string | null
+          github_username?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          created_at: string | null
+          id: string
+          question: string
+          updated_at: string | null
+          user_repo_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          question: string
+          updated_at?: string | null
+          user_repo_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          question?: string
+          updated_at?: string | null
+          user_repo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_user_repo_id_fkey"
+            columns: ["user_repo_id"]
+            isOneToOne: false
+            referencedRelation: "user_repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      repositories: {
+        Row: {
+          admin_id: string
+          created_at: string | null
+          description: string | null
+          github_repo_name: string
+          github_repo_url: string
+          id: string
+          is_active: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string | null
+          description?: string | null
+          github_repo_name: string
+          github_repo_url: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string | null
+          description?: string | null
+          github_repo_name?: string
+          github_repo_url?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "repositories_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_repositories: {
+        Row: {
+          chatbot_name: string
+          created_at: string | null
+          github_repo_name: string
+          github_repo_url: string
+          id: string
+          template_repo_id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chatbot_name: string
+          created_at?: string | null
+          github_repo_name: string
+          github_repo_url: string
+          id?: string
+          template_repo_id: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chatbot_name?: string
+          created_at?: string | null
+          github_repo_name?: string
+          github_repo_url?: string
+          id?: string
+          template_repo_id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_repositories_template_repo_id_fkey"
+            columns: ["template_repo_id"]
+            isOneToOne: false
+            referencedRelation: "repositories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_repositories_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +391,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
