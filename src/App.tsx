@@ -10,7 +10,7 @@ import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { UserDashboard } from "@/components/user/UserDashboard";
 import { RepositoryDetail } from "@/components/repository/RepositoryDetail";
 import NotFound from "./pages/NotFound";
-import GithubCallback from "./pages/GithubCallback.tsx";
+import GithubCallback from "@/pages/GithubCallback";
 
 const queryClient = new QueryClient();
 
